@@ -40,10 +40,10 @@ export default function Sidebar() {
         </h2>
 
         <nav className="space-y-2">
-          <NavLink to="shorts" className={linkClasses}>
+          <NavLink to="view-shorts" className={linkClasses}>
             <BookOpen size={18} /> View Shorts
           </NavLink>
-          <NavLink to="journals" className={linkClasses}>
+          <NavLink to="view-journals" className={linkClasses}>
             <PenSquare size={18} /> View Journals
           </NavLink>
           <NavLink to="create-short" className={linkClasses}>
@@ -57,10 +57,10 @@ export default function Sidebar() {
 
       {/* Bottom Section */}
       <div className="space-y-3">
-        <NavLink to="/dashboard/profile" className={linkClasses}>
+        <NavLink to="profile" className={linkClasses}>
           <User size={18} /> Profile
         </NavLink>
-        <NavLink to="/dashboard/settings" className={linkClasses}>
+        <NavLink to="settings" className={linkClasses}>
           <Settings size={18} /> Settings
         </NavLink>
 

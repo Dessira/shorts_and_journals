@@ -12,6 +12,7 @@ import ViewJournals from "./pages/ViewJournals";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile"
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -27,6 +28,9 @@ const router = createBrowserRouter([
       { path: "view-shorts", element: <ViewShorts /> },
       { path: "view-journals", element: <ViewJournals /> },
       { path: "settings", element: <Settings /> },
+      {path: "profile", element:
+      <Profile />
+      }
     ],
   },
 ]);

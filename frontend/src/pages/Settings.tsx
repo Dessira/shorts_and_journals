@@ -1,4 +1,4 @@
 export default function CreateShort() {
-    return <div className="p-8">📝 Create Short Page</div>;
+    return <div className="p-8">📝 Create Settings</div>;
   }
   
