@@ -1,0 +1,36 @@
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
+import CreateShort from "./pages/CreateShort";
+import CreateJournal from "./pages/CreateJournal";
+import ViewShorts from "./pages/ViewShorts";
+import ViewJournals from "./pages/ViewJournals";
+import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
+const router = createBrowserRouter([
+  { path: "/", element: <Landing /> },
+  { path: "/login", element: <Login /> },
+  { path: "/signup", element: <Signup /> },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    children: [
+      { path: "", element: <div>Welcome to your Dashboard 👋</div> },
+      { path: "create-short", element: <CreateShort /> },
+      { path: "create-journal", element: <CreateJournal /> },
+      { path: "view-shorts", element: <ViewShorts /> },
+      { path: "view-journals", element: <ViewJournals /> },
+      { path: "settings", element: <Settings /> },
+    ],
+  },
+]);
+
+export default function AppRouter() {
+  return <RouterProvider router={router} />;
+}

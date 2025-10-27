@@ -1,0 +1,18 @@
+@import "tailwindcss";
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.ql-container {
+  min-height: 400px;
+  max-height: 70vh;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  overflow-y: auto;
+}
+
+.ql-editor {
+  padding: 1.25rem !important;
+}
