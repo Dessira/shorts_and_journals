@@ -1,0 +1,18 @@
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Python / Backend
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/migrations/versions/*.pyc
+# Python virtual environment in app
+backend/app/my_project_venv/
+
+# Python cache files in app
+backend/app/__pycache__/
+backend/app/**/*.pyc
+
+
