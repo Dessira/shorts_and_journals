@@ -7,7 +7,9 @@ frontend/.env
 backend/__pycache__/
 backend/*.pyc
 backend/.env
+backend/migrations/__pycache__/
 backend/migrations/versions/*.pyc
+backend/migrations/versions/__pycache__/
 # Python virtual environment in app
 backend/app/my_project_venv/
 
@@ -15,4 +17,4 @@ backend/app/my_project_venv/
 backend/app/__pycache__/
 backend/app/**/*.pyc
 
-
+backend/tests/__pycache__/

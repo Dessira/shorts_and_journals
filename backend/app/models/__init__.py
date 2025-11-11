@@ -1,3 +1,7 @@
-from app.models.user import User
-from app.models.short import Short
-from app.models.journal import Journal
+from .user import User
+from .journal import Journal
+from .short import Short
+from .tag import Tag, ShortTag
+
+__all__ = ["User", "Journal", "Short", "Tag", "ShortTag"]
+
