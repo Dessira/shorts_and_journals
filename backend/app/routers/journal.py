@@ -1,0 +1,97 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session
+from typing import List, Optional
+
+from app.core.db import get_session
+from app.core.security import get_current_user, get_current_user_optional
+from app.schemas.journal import JournalCreate, JournalRead, JournalUpdate
+from app.services.journal_service import JournalService
+from app.models.user import User
+
+router = APIRouter(prefix="/journals", tags=["Journals"])
+
+
+# ✅ Create journal (Auth required)
+@router.post("/", response_model=JournalRead)
+def create_user_journal(
+    data: JournalCreate,
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    print("--------I ran!!!!---------")
+    return JournalService.create_journal(db, data, current_user.id)
+
+
+# ✅ Public journals (No auth)
+@router.get("/public", response_model=List[JournalRead])
+def list_public_journals(db: Session = Depends(get_session)):
+    return JournalService.get_public_journals(db)
+
+
+# ✅ Get logged-in user's journals
+@router.get("/me", response_model=List[JournalRead])
+async def list_my_journals(
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    return JournalService.get_user_journals(db, current_user.id)
+
+
+# ✅ Get single journal (private = owner only)
+@router.get("/{journal_id}", response_model=JournalRead)
+def get_journal(
+    journal_id: str,
+    db: Session = Depends(get_session),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    if current_user == None:
+        user_id = ""
+    else:
+        user_id = current_user.id
+
+    journal = JournalService.get_journal(db, journal_id, user_id)
+    if not journal:
+        raise HTTPException(status_code=404, detail="Journal not found")
+    access = False
+
+    if journal.is_private and journal.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="This journal is private")
+
+    return journal
+
+
+# ✅ Update journal (owner only)
+@router.put("/{journal_id}", response_model=JournalRead)
+def update_user_journal(
+    journal_id: str,
+    data: JournalUpdate,
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    journal = JournalService.get_journal_by_id(db, journal_id, current_user.id)
+    if not journal:
+        raise HTTPException(status_code=404, detail="Journal not found")
+
+    if journal.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    return JournalService.update_journal(db, journal_id, data)
+
+
+# ✅ Delete journal (owner only)
+@router.delete("/{journal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_journal(
+    journal_id: str,
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    journal = JournalService.get_journal_by_id(db, journal_id)
+    if not journal:
+        raise HTTPException(status_code=404, detail="Journal not found")
+
+    if journal.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    JournalService.delete_journal(db, journal_id)
+    return
+

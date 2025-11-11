@@ -7,6 +7,8 @@ from app.core.config import get_settings
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
 from app.core.db import get_session
+from uuid import UUID
+from typing import Optional
 
 settings = get_settings()
 
@@ -14,7 +16,7 @@ pwd_context = CryptContext(
     schemes=["argon2"],
     deprecated="auto"
 )
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -48,28 +50,35 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 def verify_access_token(token: str):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: int = payload.get("sub")
+        user_id: str = payload.get("sub")
         if user_id is None:
             return None
         return user_id
     except JWTError:
         return None
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+def get_current_user(token: Optional[str] = Depends(oauth2_scheme), db: Session = Depends(get_session))-> Optional[User]:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    if not token:
+        return None
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
+        user_id = UUID(user_id)
     except JWTError:
         raise credentials_exception
 
-    user = db.exec(select(User).where(User.email == email)).first()
+    user = db.exec(select(User).where(User.id == user_id)).first()
     if user is None:
         raise credentials_exception
     return user
+def get_current_user_optional(
+    current_user: Optional[User] = Depends(get_current_user)
+) -> Optional[User]:
+    return current_user
