@@ -11,7 +11,6 @@ from app.models.user import User
 router = APIRouter(prefix="/journals", tags=["Journals"])
 
 
-# ✅ Create journal (Auth required)
 @router.post("/", response_model=JournalRead)
 def create_user_journal(
     data: JournalCreate,
@@ -22,13 +21,12 @@ def create_user_journal(
     return JournalService.create_journal(db, data, current_user.id)
 
 
-# ✅ Public journals (No auth)
 @router.get("/public", response_model=List[JournalRead])
 def list_public_journals(db: Session = Depends(get_session)):
     return JournalService.get_public_journals(db)
 
 
-# ✅ Get logged-in user's journals
+
 @router.get("/me", response_model=List[JournalRead])
 async def list_my_journals(
     db: Session = Depends(get_session),
@@ -37,7 +35,7 @@ async def list_my_journals(
     return JournalService.get_user_journals(db, current_user.id)
 
 
-# ✅ Get single journal (private = owner only)
+
 @router.get("/{journal_id}", response_model=JournalRead)
 def get_journal(
     journal_id: str,
@@ -60,7 +58,6 @@ def get_journal(
     return journal
 
 
-# ✅ Update journal (owner only)
 @router.put("/{journal_id}", response_model=JournalRead)
 def update_user_journal(
     journal_id: str,
@@ -78,7 +75,6 @@ def update_user_journal(
     return JournalService.update_journal(db, journal_id, data)
 
 
-# ✅ Delete journal (owner only)
 @router.delete("/{journal_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user_journal(
     journal_id: str,
