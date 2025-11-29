@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
-import heroImage from "../assets/Hero.png";
+import heroImage from "../assets/pixeltrue-study-from-books-1.svg"
 import { motion, type Variants } from "framer-motion";
 import { HomeNavbar } from "../components/HomeNavbar";
 
@@ -44,7 +44,7 @@ export default function Landing() {
           </motion.div>
         ))}
         {/* Animated Particles */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="hidden absolute inset-0 overflow-hidden">
         {[...Array(30)].map((_, i) => (
           <motion.div
             key={`particle-${i}`}
@@ -93,11 +93,11 @@ export default function Landing() {
         </div>
 
         {/* Hero Illustration */}
-        <div className="hidden bg-purple-400 rounded-full w-1/2 aspect-square md:grid place-content-center">
+        <div className="hidden bg-purple-100 rounded-full w-1/2 aspect-square md:grid place-content-center">
         <img
         src={heroImage}
         alt="Landing page hero"
-        className="scale-150"
+        className="h-full w-full"
       />
         </div>
       </section>

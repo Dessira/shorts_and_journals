@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile"
+import { PrivateRoute } from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -18,7 +19,11 @@ const router = createBrowserRouter([
   { path: "/signup", element: <Signup /> },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: (
+      <PrivateRoute>
+        <Dashboard />
+      </PrivateRoute>
+    ),
     children: [
       { path: "", element: <div>Welcome to your Dashboard 👋</div> },
       { path: "create-short", element: <CreateShort /> },
