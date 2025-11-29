@@ -1,6 +1,6 @@
 // src/types.ts
 export interface SignupData {
-    fullname: string;
+    full_name: string;
     username: string;
     email: string;
     password: string;
@@ -11,7 +11,7 @@ export interface SignupData {
     password: string;
   }
   export interface User {
-    fullname: string;
+    full_name: string;
     username: string;
     email: string;
     id: string;

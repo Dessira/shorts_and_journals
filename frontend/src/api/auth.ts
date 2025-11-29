@@ -43,17 +43,17 @@ throw new Error(errMsg);
 return response.json();
 }
 
-export async function isAuthenticated(): Promise<boolean> {
+export async function isAuthenticated(): Promise<{ isAuth: boolean; user?: any }> {
   const token = getCookie("access_token");
   if (!token){
-    return false
+    return { isAuth: false, user: null };
   }
   const res = await validateToken(token);
    if (res === null){
-    return false
+    return { isAuth: false, user: null };
    }
 
-   return true
+   return res
 }
 
 export function getCookie(name: string) {
@@ -66,8 +66,9 @@ async function validateToken(token: string) {
     const res = await fetch("http://localhost:8000/users/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.ok; // 200 means valid
+    const user = await res.json()
+    return { isAuth: true, user }; // 200 means valid
   } catch {
-    return null;
+    return { isAuth: false, user: null };
   }
 }
