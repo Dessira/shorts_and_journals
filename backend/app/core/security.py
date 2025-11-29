@@ -5,7 +5,7 @@ from sqlmodel import Session, select
 from app.models.user import User
 from app.core.config import get_settings
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from app.core.db import get_session
 from uuid import UUID
 from typing import Optional
@@ -25,8 +25,8 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 # Authenticate user
-def authenticate_user(db: Session, email: str, password: str):
-    stmt = select(User).where(User.email == email)
+def authenticate_user(db: Session, username: str, password: str):
+    stmt = select(User).where(User.username == username)
     user = db.exec(stmt).first()
 
     if not user or not verify_password(password, user.hashed_password):
@@ -82,3 +82,19 @@ def get_current_user_optional(
     current_user: Optional[User] = Depends(get_current_user)
 ) -> Optional[User]:
     return current_user
+
+def get_token_from_request(request: Request, token: Optional[str]):
+    """
+    Priority:
+    1. Authorization header Bearer token (OAuth2)
+    2. Cookie named 'access_token'
+    """
+    if token:  
+        return token
+    
+    cookie_token = request.cookies.get("access_token")
+    if cookie_token:
+        return cookie_token
+
+    return None
+

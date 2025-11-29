@@ -6,6 +6,19 @@ from app.routers import user
 from app.routers import journal
 app = FastAPI()
 #start app
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost:5173",  # Vite dev server
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.on_event("startup")
 def on_startup():
     init_db()

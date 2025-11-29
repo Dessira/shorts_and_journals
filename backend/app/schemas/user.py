@@ -20,6 +20,6 @@ class UserRead(UserBase):
         from_attributes = True
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
