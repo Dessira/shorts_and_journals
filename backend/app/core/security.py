@@ -9,6 +9,7 @@ from fastapi import Depends, HTTPException, status, Request
 from app.core.db import get_session
 from uuid import UUID
 from typing import Optional
+from app.schemas.user import UserRead
 
 settings = get_settings()
 
@@ -77,7 +78,9 @@ def get_current_user(token: Optional[str] = Depends(oauth2_scheme), db: Session 
     user = db.exec(select(User).where(User.id == user_id)).first()
     if user is None:
         raise credentials_exception
-    return user
+    print(user)
+    return UserRead.model_validate(user)
+
 def get_current_user_optional(
     current_user: Optional[User] = Depends(get_current_user)
 ) -> Optional[User]:
