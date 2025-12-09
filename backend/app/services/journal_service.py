@@ -14,17 +14,18 @@ from app.schemas.journal import JournalCreate, JournalRead, JournalUpdate
 class JournalService:
 
     @staticmethod
-    def create_journal(
-        db: Session, journal_data: JournalCreate, user_id: UUID
-    ) -> Journal:
+    def create_journal(db: Session, journal_data: JournalCreate, user_id: UUID) -> Journal:
         journal = Journal(
-            **journal_data.model_dump(),
+            name=journal_data.name,
+            description=journal_data.description,
+            is_private=journal_data.is_private,
             user_id=user_id
         )
         db.add(journal)
         db.commit()
         db.refresh(journal)
         return journal
+
 
     @staticmethod
     def get_journal(
@@ -79,6 +80,21 @@ class JournalService:
             if res:
                 data.append(res)
 
+        return data
+
+    @staticmethod
+    def get_user_journals(db: Session, user_id: UUID) -> List[JournalRead]:
+        """
+        Returns all journals for a specific user (private and public)
+        """
+        result = db.exec(select(Journal).where(Journal.user_id == user_id))
+        journals = result.all()
+
+        data = []
+        for journal in journals:
+            res = JournalService.get_journal(db, journal.id, user_id)  # reuses existing logic
+            if res:
+                data.append(res)
         return data
 
     @staticmethod

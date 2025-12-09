@@ -11,7 +11,9 @@ class JournalBase(BaseModel):
 
 
 class JournalCreate(JournalBase):
-    pass
+    name: str
+    description:str
+    is_private: bool
 
 
 class JournalRead(JournalBase):
@@ -21,8 +23,8 @@ class JournalRead(JournalBase):
     user_id: UUID
 
 
-class Config:
-    from_attributes = True
+    class Config:
+        from_attributes = True
 
 
 class JournalUpdate(BaseModel):
