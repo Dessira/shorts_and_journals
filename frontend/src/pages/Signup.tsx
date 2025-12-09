@@ -9,7 +9,7 @@ import { signupUser } from "../api/auth";
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const [fullname, setFullName] = useState("");
+  const [full_name, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +19,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!fullname || !username || !email || !password || !confirmPassword) {
+    if (!full_name || !username || !email || !password || !confirmPassword) {
       alert("Please fill in all fields.");
       return;
     }
@@ -49,7 +49,7 @@ export default function SignUp() {
     //  return;
     //}
 
-    const newUser: SignupData = { fullname, username, email, password };
+    const newUser: SignupData = { full_name, username, email, password };
 
 
     //localStorage.setItem("users", JSON.stringify([...users, newUser]));
@@ -108,7 +108,7 @@ const fadeUp = {
         <input
           className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-purple-400 outline-none text-sm"
           placeholder="Full name"
-          value={fullname}
+          value={full_name}
           onChange={(e) => setFullName(e.target.value)}
         />
 
