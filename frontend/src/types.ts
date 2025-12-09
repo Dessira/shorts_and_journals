@@ -17,3 +17,19 @@ export interface SignupData {
     id: string;
     token?: string;
   }
+
+  // types/journal.ts
+
+export interface Journal {
+  id: string;
+  name: string;
+  description: string;
+  is_private: boolean;
+  created_at: string;
+}
+
+export interface JournalCreatePayload {
+  name: string;
+  description: string;
+  is_private: boolean;
+}
