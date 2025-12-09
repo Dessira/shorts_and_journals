@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImg from "../assets/signup_icon.webp";
 import { easeOut } from "framer-motion"
+import type { SignupData } from "../types";
+import { signupUser } from "../api/auth";
 
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const [fullName, setFullName] = useState("");
+  const [full_name, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,8 +18,8 @@ export default function SignUp() {
   const [tc, setTc] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (!fullName || !username || !email || !password || !confirmPassword) {
+  const handleSubmit = async () => {
+    if (!full_name || !username || !email || !password || !confirmPassword) {
       alert("Please fill in all fields.");
       return;
     }
@@ -33,28 +35,37 @@ export default function SignUp() {
     }
 
     setLoading(true);
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    //const users = JSON.parse(localStorage.getItem("users") || "[]");
 
-    if (users.some((u: any) => u.email === email)) {
-      alert("Email already exists.");
-      setLoading(false);
-      return;
+    //if (users.some((u: any) => u.email === email)) {
+    //  alert("Email already exists.");
+    //  setLoading(false);
+    //  return;
+    //}
+
+    //if (users.some((u: any) => u.username === username)) {
+    //  alert("Username already taken.");
+    //  setLoading(false);
+    //  return;
+    //}
+
+    const newUser: SignupData = { full_name, username, email, password };
+
+
+    //localStorage.setItem("users", JSON.stringify([...users, newUser]));
+    try {
+      const res = await signupUser(newUser); 
+      alert(JSON.stringify(res, null, 2));
+      setTimeout(() => {
+        setLoading(false);
+        alert("Sign up successful!");
+        navigate("/login");
+      }, 1000);
+    } catch (err: any) {
+      alert(err?.message || "Signup failed");
+      setLoading(false);    
     }
 
-    if (users.some((u: any) => u.username === username)) {
-      alert("Username already taken.");
-      setLoading(false);
-      return;
-    }
-
-    const newUser = { fullName, username, email, password };
-    localStorage.setItem("users", JSON.stringify([...users, newUser]));
-
-    setTimeout(() => {
-      setLoading(false);
-      alert("Sign up successful!");
-      navigate("/login");
-    }, 1000);
   };
 
 
@@ -97,7 +108,7 @@ const fadeUp = {
         <input
           className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-purple-400 outline-none text-sm"
           placeholder="Full name"
-          value={fullName}
+          value={full_name}
           onChange={(e) => setFullName(e.target.value)}
         />
 

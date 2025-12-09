@@ -1,16 +1,14 @@
-import { FC } from "react";
+import  type  { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 type JournalCardProps = {
-  id: number; // index or unique id
-  title: string;
+  id: string; // index or unique id
+  name: string;
   description: string;
-  tags: string[];
-  shortsCount: number;
-  isPrivate: boolean;
+  is_private: boolean;
 };
 
-const JournalCard: FC<JournalCardProps> = ({ id, title, description, tags, shortsCount, isPrivate }) => {
+const JournalCard: FC<JournalCardProps> = ({ id, name, description, is_private }) => {
   const navigate = useNavigate();
 
   // Description preview (first 120 chars)
@@ -22,18 +20,15 @@ const JournalCard: FC<JournalCardProps> = ({ id, title, description, tags, short
       onClick={() => navigate(`/journals/${id}`)}
     >
       {/* Title */}
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{title}</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{name}</h2>
 
       {/* Description */}
       {description && <p className="text-gray-700 dark:text-gray-300 mb-2">{preview}</p>}
 
       {/* Shorts count */}
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-        {shortsCount} short{shortsCount !== 1 ? "s" : ""}
-      </p>
 
       {/* Tags */}
-      {tags.length > 0 && (
+      {/* {tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag) => (
             <span
@@ -44,11 +39,11 @@ const JournalCard: FC<JournalCardProps> = ({ id, title, description, tags, short
             </span>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* Privacy */}
       <p className="text-xs text-gray-500 dark:text-gray-400">
-        {isPrivate ? "Private" : "Public"}
+        {is_private ? "Private" : "Public"}
       </p>
     </div>
   );

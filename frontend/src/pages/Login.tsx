@@ -1,35 +1,45 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import heroImg from "../assets/shorts_login_icon.webp"; // your illustration
+import { loginUser } from "../api/auth";
+import type { LoginData } from "../types";
+
 
 export default function Login() {
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (!identifier || !password) return alert("Please fill in all fields.");
+  const handleLogin = async () => {
+    if (!username || !password) return alert("Please fill in all fields.");
     setLoading(true);
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (u: any) =>
-        (u.email === identifier || u.username === identifier) &&
-        u.password === password
-    );
+    ///const users = JSON.parse(localStorage.//getItem("users") || "[]");
+    //const user = users.find(
+    //  (u: any) =>
+    //    (u.email === identifier || u.username === identifier) &&
+    //    u.password === password
+    //);
+    const newUser: LoginData = {username, password };
+    try{
+      const  res = await loginUser(newUser);
+      alert(`Login successful! Welcome back,`)
+      // after login
+      alert(JSON.stringify(res.access_token, null, 2));
+document.cookie = `access_token=${res.access_token}; path=/; secure; samesite=strict`;
 
-    setTimeout(() => {
+    setTimeout( () => {
       setLoading(false);
-      if (!user) return alert("Invalid username/email or password.");
-
-      if (remember) localStorage.setItem("rememberUser", identifier);
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      alert(`Welcome back, ${user.username}!`);
-      navigate("/dashboard");
+      //if (!user) return alert("Invalid username/email or password.")
+      //navigate("/dashboard");
     }, 1000);
+  } catch (err: any) {
+    alert(err?.message || "Login failed");
+    setLoading(false);    
+  }
   };
 
   return (
@@ -54,11 +64,11 @@ export default function Login() {
             {/* Username */}
             <div>
               <label className="text-sm font-medium text-gray-700">
-                Username or Email
+                Username
               </label>
               <input
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full mt-2 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-purple-400 outline-none"
                 placeholder="john_doe or john@mail.com"
               />

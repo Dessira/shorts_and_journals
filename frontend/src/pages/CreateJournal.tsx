@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useJournalStore } from "../store/journalStore";
 
 type Short = {
   title: string;
@@ -9,13 +10,14 @@ type Short = {
 };
 
 export default function CreateJournal() {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [is_private, setIsPrivate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const addJournal = useJournalStore((s) => s.addJournal);
 
-  const handleSave = () => {
-    if (!title.trim()) {
+  const handleSave = async () => {
+    if (!name.trim()) {
       alert("Please enter a journal title.");
       return;
     }
@@ -23,23 +25,24 @@ export default function CreateJournal() {
     setSaving(true);
 
     const newJournal = {
-      title,
+      name,
       description,
-      isPrivate,
-      shorts: [] as Short[], // no shorts yet
-      tags: [] as string[],  // starts empty
+      is_private,
     };
-
-    const savedJournals = JSON.parse(localStorage.getItem("journals") || "[]");
-    localStorage.setItem("journals", JSON.stringify([...savedJournals, newJournal]));
-
-    setTimeout(() => {
+    try {
+      await addJournal(newJournal);
+      alert("Journal created!");
+      setTimeout(() => {
+        setSaving(false);
+        alert("Journal created successfully!");
+        setName("");
+        setDescription("");
+        setIsPrivate(false);
+      }, 80);
+    } catch (err: any) {
+      alert(err?.message || "Journal failed");
       setSaving(false);
-      alert("Journal created successfully!");
-      setTitle("");
-      setDescription("");
-      setIsPrivate(false);
-    }, 800);
+    }
   };
 
   return (
@@ -55,8 +58,8 @@ export default function CreateJournal() {
         </label>
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Enter journal title..."
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
         />
@@ -82,12 +85,12 @@ export default function CreateJournal() {
         </label>
         <input
           type="checkbox"
-          checked={isPrivate}
+          checked={is_private}
           onChange={(e) => setIsPrivate(e.target.checked)}
           className="w-5 h-5 accent-blue-600"
         />
         <span className="text-gray-500 text-sm">
-          {isPrivate ? "Only you can view this journal." : "Visible to everyone."}
+          {is_private ? "Only you can view this journal." : "Visible to everyone."}
         </span>
       </div>
 
@@ -102,3 +105,7 @@ export default function CreateJournal() {
     </div>
   );
 }
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+
